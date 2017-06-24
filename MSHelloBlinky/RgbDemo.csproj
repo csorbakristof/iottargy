@@ -7,8 +7,8 @@
     <ProjectGuid>{3662C7F2-04F8-4046-BF8E-EF1AC302DFE2}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Blinky</RootNamespace>
-    <AssemblyName>Blinky</AssemblyName>
+    <RootNamespace>RgbDemo</RootNamespace>
+    <AssemblyName>RgbDemo</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
@@ -102,6 +102,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Leds.cs" />
+    <Compile Include="LedShapes.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

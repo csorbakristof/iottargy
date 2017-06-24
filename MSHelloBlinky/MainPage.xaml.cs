@@ -12,10 +12,9 @@ namespace RgbDemo
     public sealed partial class MainPage : Page
     {
         private DispatcherTimer timer;
-        private SolidColorBrush redBrush = new SolidColorBrush(Windows.UI.Colors.Red);
-        private SolidColorBrush grayBrush = new SolidColorBrush(Windows.UI.Colors.LightGray);
 
         private Leds leds = new Leds();
+        private LedShapes ledShapes = new LedShapes();
 
         public MainPage()
         {
@@ -25,6 +24,7 @@ namespace RgbDemo
             timer.Interval = TimeSpan.FromMilliseconds(500);
             timer.Tick += Timer_Tick;
             leds.Init(true);
+            ledShapes.Init(redLedShape, greenLedShape, blueLedShape);
             GpioStatus.Text = "GPIO pin initialized correctly.";
 
             timer.Start();
@@ -32,18 +32,15 @@ namespace RgbDemo
 
         private void Timer_Tick(object sender, object e)
         {
-            if (leds.GetLed(0))
-            {
-                leds.SetLed(0, false);
-                LED.Fill = redBrush;
-            }
-            else
-            {
-                leds.SetLed(0, true);
-                LED.Fill = grayBrush;
-            }
+            invertLed(0);
+            invertLed(1);
+            invertLed(2);
         }
-             
 
+        private void invertLed(int index)
+        {
+            leds.SetLed(index, !leds.GetLed(index));
+            ledShapes.SetLed(index, leds.GetLed(index));
+        }
     }
 }
