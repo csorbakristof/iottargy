@@ -31,15 +31,15 @@ namespace RgbDemo
             Debug.WriteLine("OnNavigatedTo...");
             try
             {
-                colorSensor = new ColorSensorTcs34725();
-                await colorSensor.Init();
-
                 timer = new DispatcherTimer();
                 timer.Interval = TimeSpan.FromMilliseconds(500);
                 timer.Tick += Timer_Tick;
                 leds.Init(true);
                 ledShapes.Init(redLedShape, greenLedShape, blueLedShape);
                 GpioStatus.Text = "GPIO pin initialized correctly.";
+
+                colorSensor = new ColorSensorTcs34725();
+                await colorSensor.Init();
 
                 timer.Start();
                 Debug.WriteLine("Started...");
@@ -51,15 +51,37 @@ namespace RgbDemo
             }
         }
 
-
         private async void Timer_Tick(object sender, object e)
         {
-            invertLed(0);
-            invertLed(1);
-            invertLed(2);
+//            invertLed(0);
+//            invertLed(1);
+//            invertLed(2);
 
             var rgb = await colorSensor.GetRgbData();
             Debug.WriteLine(string.Format("R{0} G{1} B{2}", rgb.Red, rgb.Green, rgb.Blue));
+            SetLedsAccordingToSensorValue(rgb);
+        }
+
+        private void SetLedsAccordingToSensorValue(RgbData rgb)
+        {
+            // Active LEDs corresponding to not significant color components.
+            // (This way, most LEDs will be active most of the time.)
+            int max = rgb.Red > rgb.Green ?
+                (rgb.Red > rgb.Blue ? rgb.Red : rgb.Blue) :
+                (rgb.Green > rgb.Blue ? rgb.Green : rgb.Blue);
+            int min = rgb.Red < rgb.Green ?
+                (rgb.Red < rgb.Blue ? rgb.Red : rgb.Blue) :
+                (rgb.Green < rgb.Blue ? rgb.Green : rgb.Blue);
+            int threshold = (min + max) / 2 + 20;
+            setLed(0, rgb.Red < threshold);
+            setLed(1, rgb.Green < threshold);
+            setLed(2, rgb.Blue < threshold);
+        }
+
+        private void setLed(int index, bool value)
+        {
+            leds.SetLed(index, value);
+            ledShapes.SetLed(index, value);
         }
 
         private void invertLed(int index)
