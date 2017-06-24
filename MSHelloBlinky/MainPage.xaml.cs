@@ -1,12 +1,7 @@
-﻿// Copyright (c) Microsoft. All rights reserved.
-
-using System;
+﻿using System;
 using System.Diagnostics;
-using Windows.Devices.Gpio;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace RgbDemo
@@ -24,11 +19,9 @@ namespace RgbDemo
             InitializeComponent();
         }
 
-
         // Async init functions
         protected override async void OnNavigatedTo(NavigationEventArgs navArgs)
         {
-            Debug.WriteLine("OnNavigatedTo...");
             try
             {
                 timer = new DispatcherTimer();
@@ -36,7 +29,6 @@ namespace RgbDemo
                 timer.Tick += Timer_Tick;
                 leds.Init(true);
                 ledShapes.Init(redLedShape, greenLedShape, blueLedShape);
-                GpioStatus.Text = "GPIO pin initialized correctly.";
 
                 colorSensor = new ColorSensorTcs34725();
                 await colorSensor.Init();
@@ -53,12 +45,8 @@ namespace RgbDemo
 
         private async void Timer_Tick(object sender, object e)
         {
-//            invertLed(0);
-//            invertLed(1);
-//            invertLed(2);
-
             var rgb = await colorSensor.GetRgbData();
-            Debug.WriteLine(string.Format("R{0} G{1} B{2}", rgb.Red, rgb.Green, rgb.Blue));
+            Debug.WriteLine(string.Format("R:{0} G:{1} B:{2}", rgb.Red, rgb.Green, rgb.Blue));
             SetLedsAccordingToSensorValue(rgb);
         }
 
