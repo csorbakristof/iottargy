@@ -7,16 +7,15 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 
-namespace Blinky
+namespace RgbDemo
 {
     public sealed partial class MainPage : Page
     {
-        private const int LED_PIN = 5;
-        private GpioPin pin;
-        private GpioPinValue pinValue;
         private DispatcherTimer timer;
         private SolidColorBrush redBrush = new SolidColorBrush(Windows.UI.Colors.Red);
         private SolidColorBrush grayBrush = new SolidColorBrush(Windows.UI.Colors.LightGray);
+
+        private Leds leds = new Leds();
 
         public MainPage()
         {
@@ -25,51 +24,22 @@ namespace Blinky
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(500);
             timer.Tick += Timer_Tick;
-            InitGPIO();
-            if (pin != null)
-            {
-                timer.Start();
-            }        
-        }
-
-        private void InitGPIO()
-        {
-            var gpio = GpioController.GetDefault();
-
-            // Show an error if there is no GPIO controller
-            if (gpio == null)
-            {
-                pin = null;
-                GpioStatus.Text = "There is no GPIO controller on this device.";
-                return;
-            }
-
-            pin = gpio.OpenPin(LED_PIN);
-            pinValue = GpioPinValue.High;
-            pin.Write(pinValue);
-            pin.SetDriveMode(GpioPinDriveMode.Output);
-
+            leds.Init(true);
             GpioStatus.Text = "GPIO pin initialized correctly.";
 
+            timer.Start();
         }
-
-   
-
-
-
 
         private void Timer_Tick(object sender, object e)
         {
-            if (pinValue == GpioPinValue.High)
+            if (leds.GetLed(0))
             {
-                pinValue = GpioPinValue.Low;
-                pin.Write(pinValue);
+                leds.SetLed(0, false);
                 LED.Fill = redBrush;
             }
             else
             {
-                pinValue = GpioPinValue.High;
-                pin.Write(pinValue);
+                leds.SetLed(0, true);
                 LED.Fill = grayBrush;
             }
         }
