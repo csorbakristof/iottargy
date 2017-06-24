@@ -101,6 +101,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ColorSensorTcs34725.cs" />
     <Compile Include="Leds.cs" />
     <Compile Include="LedShapes.cs" />
     <Compile Include="MainPage.xaml.cs">
