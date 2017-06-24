@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net.Http;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -48,6 +49,24 @@ namespace RgbDemo
             var rgb = await colorSensor.GetRgbData();
             Debug.WriteLine(string.Format("R:{0} G:{1} B:{2}", rgb.Red, rgb.Green, rgb.Blue));
             SetLedsAccordingToSensorValue(rgb);
+            SendReportToServer(rgb);
+        }
+
+        private async void SendReportToServer(RgbData rgb)
+        {
+            const string serverBaseUrl = "http://avalon.aut.bme.hu/kristof/rgbdemo/add.php";
+            string url = string.Format("{0}?R={1}&G={2}&B={3}", serverBaseUrl, rgb.Red, rgb.Green, rgb.Blue);
+            try
+            {
+                using (HttpClient http = new HttpClient())
+                {
+                    string response = await http.GetStringAsync(url);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(string.Format("SendReportToServer error:\n(URL: {0})\n{1}",url,ex.ToString()));
+            }
         }
 
         private void SetLedsAccordingToSensorValue(RgbData rgb)
