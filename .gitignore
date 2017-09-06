@@ -1,3 +1,6 @@
 MSHelloBlinky/bin/*
 MSHelloBlinky/obj/*
 *.suo
+RgbDemo/.vs/
+RgbDemo/bin/
+RgbDemo/obj/
