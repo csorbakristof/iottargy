@@ -2,6 +2,8 @@
 
 namespace RgbDemo
 {
+    // Wraps 3 WPF Ellipses corresponding to 3 LEDs.
+    // Shapes are set externally via Init().
     public class LedShapes
     {
         private SolidColorBrush[] activeLedBrushes = new SolidColorBrush[3];

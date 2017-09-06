@@ -3,11 +3,19 @@ using Windows.Devices.Gpio;
 
 namespace RgbDemo
 {
+    // Wraps 3 LEDs
     public sealed class Leds
     {
+        // Mapping of LED indices to hardware pin indices
         private readonly int[] ledPins = new int[3] { 5, 6, 13 };
+
+        // GpioPin instances associated with the 3 LEDs
         private GpioPin[] pins = new GpioPin[3];
+
+        // Stored status of the 3 LEDs.
         private bool[] ledStates = new bool[3];
+
+        // Set true if LEDs use inverse logic on hardware level
         private bool isInverted = false;
 
         public void Init(bool isInverted=false)

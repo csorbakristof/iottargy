@@ -15,10 +15,11 @@ namespace RgbDemo
 
     class ColorSensorTcs34725
     {
-        #region Hardver parameters, registers, and enums
+        #region Hardver parameters, registers, and enums (from the datasheet)
         struct TCS34725Params
         {
-            //Address values set according to the datasheet: http://www.adafruit.com/datasheets/TCS34725.pdf
+            // Address values set according to the datasheet:
+            //   http://www.adafruit.com/datasheets/TCS34725.pdf
             public const byte Address = 0x29;
 
             public const byte ENABLE = 0x00;
@@ -32,14 +33,13 @@ namespace RgbDemo
             public const byte RDATAH = 0x17;
             public const byte GDATAL = 0x18;  //Green channel data
             public const byte GDATAH = 0x19;
-            public const byte BDATAL = 0x1A;  //Blue channel data */
+            public const byte BDATAL = 0x1A;  //Blue channel data
             public const byte BDATAH = 0x1B;
             public const byte ATIME = 0x01;   //Integration time
             public const byte CONTROL = 0x0F; //Set the gain level for the sensor
 
             public const byte COMMAND_BIT = 0x80; // Have to | addresses with this value when asking for values
         }
-
 
         // An enum for the sensor intergration time, based on the values from the datasheet
         enum IntegrationTime
@@ -121,11 +121,12 @@ namespace RgbDemo
             colorSensor.WriteRead(WriteBuffer, ReadBuffer);
 
             // Turn the device off to save power by reversing the on conditions
+            // (Turn off the bits ENABLE_PON (enable power) and ENABLE_AEN (enable ADC).)
             byte onState = (TCS34725Params.ENABLE_PON | TCS34725Params.ENABLE_AEN);
-            byte offState = (byte)~onState;
+            byte offState = (byte)~onState; // Mask to clear these bits
             offState &= ReadBuffer[0];
             byte[] OffBuffer = new byte[] { TCS34725Params.ENABLE, offState };
-            colorSensor.Write(OffBuffer);
+            colorSensor.Write(OffBuffer);   // Write back the new settings
         }
 
         public async Task<RgbData> GetRgbData()
@@ -149,6 +150,7 @@ namespace RgbDemo
         // Set the default integration time as no gain
         Gain gain = Gain._16X;
 
+        // Init the sensor
         private async Task begin()
         {
             Debug.WriteLine("TCS34725::Begin");
@@ -160,6 +162,7 @@ namespace RgbDemo
             Debug.WriteLine("TCS34725 Signature: " + ReadBuffer[0].ToString());
             if (ReadBuffer[0] != 0x44)
             {
+                // This device does not seem to be the expected one.
                 Debug.WriteLine("TCS34725::Begin Signature Mismatch.");
                 return;
             }
